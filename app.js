@@ -14,7 +14,7 @@ var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 
 const mongoose = require('mongoose');
-const Dishes = require('./models/dishes');
+//const Dishes = require('./models/dishes');  // this is actually not required(tested)
 
 const url = 'mongodb://localhost:27017/conFusion';  // this url is for mongoDb server
 

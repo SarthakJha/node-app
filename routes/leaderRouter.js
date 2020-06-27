@@ -1,47 +1,67 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+const leaderModel = require('./../models/leaders');
 const leaderRouter = express.Router();
 leaderRouter.use(bodyParser.json());
 
 leaderRouter.route('/')
-.all((req,res,next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type','text/plain');
-    next();
-})
 .get((req,res,next) => {
-    res.end('GET request successful!');
+    leaderModel.find({})
+        .then((docs)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(docs);
+        }).catch((err)=> next(err));
 })
 .put((req,res,next) => {
     res.statusCode = 403;
     res.end('PUT request not available!');
 })
 .post((req,res,next) => {
-    res.end('POST request successful!');
+    leaderModel.create(req.body)
+        .then((docs)=>{
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(docs);
+        }).catch((err)=> next(err));
 })
 .delete((req,res,next) => {
-    res.end('GET request successful!');
+    leaderModel.deleteMany({})
+    .then((result)=> {
+        res.setHeader('Content-Type','application/json');
+        res.status(200).json(result);
+    }).catch((err)=> next(err));
 });
 
 leaderRouter.route('/:leaderId')
-    .all((req,res,next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type','text/plain');
-        next();
-    })
     .get((req,res,next) => {
-        res.end('GET request successful!');
+        leaderModel.findById(req.params.leaderId)
+        .then((promo)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(promo);
+        }).catch((err)=> next(err));
     })
     .put((req,res,next) => {
-        console.log('POST request successful!');
+        leaderModel.findByIdAndUpdate(req.params.leaderId,{
+            $set: req.body
+        },{
+            new: true
+        }).then((docs)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(docs);
+        }).catch((err)=> next(err)); 
     })
     .post((req,res,next) => {
         res.statusCode = 403;
         res.end('PUT request not available!');
     })
     .delete((req,res,next) => {
-        res.end('GET request successful!');
+        leaderModel.findByIdAndDelete(req.params.leaderId)
+        .then((docs)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(docs);
+        }).catch((err)=> next(err));
+        
     });
 
     module.exports = leaderRouter;

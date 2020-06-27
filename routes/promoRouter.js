@@ -1,47 +1,67 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const promoRouter = express.Router();
+
 promoRouter.use(bodyParser.json());
+const promoModel = require('../models/promotions')
 
 promoRouter.route('/')
-    .all((req,res,next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type','text/plain');
-        next();
-    })
     .get((req,res,next) => {
-        res.end('GET request successful!');
+        promoModel.find({})
+        .then((proms)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(proms);
+        }).catch((err)=> next(err));
     })
     .put((req,res,next) => {
         res.statusCode = 403;
         res.end('PUT request not available!');
     })
     .post((req,res,next) => {
-        res.end('POST request successful!');
+        promoModel.create(req.body)
+        .then((proms)=>{
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(proms);
+        }).catch((err)=> next(err));
     })
     .delete((req,res,next) => {
-        res.end('GET request successful!');
+        promoModel.deleteMany({})
+        .then((result)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(result);
+        }).catch((err)=> next(err));
     });
 
 promoRouter.route('/:promoId')
-    .all((req,res,next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type','text/plain');
-        next();
-    })
     .get((req,res,next) => {
-        res.end('GET request successful!');
+        promoModel.findById(req.params.promoId)
+        .then((promo)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(promo);
+        }).catch((err)=> next(err));
     })
     .put((req,res,next) => {
-        res.end('PUT request successful!');
+        promoModel.findByIdAndUpdate(req.params.promoId,{
+            $set: req.body
+        },{
+            new: true
+        }).then((promo)=> {
+            res.setHeader('Content-Type','application/json');
+            res.status(200).json(promo);
+        }).catch((err)=> next(err)); 
     })
     .post((req,res,next) => {
         res.statusCode = 403;
         res.end('POST request not available!');
     })
     .delete((req,res,next) => {
-        res.end('GET request successful!');
-    });
+        promoModel.findByIdAndDelete(req.params.promoId)
+            .then((promo)=> {
+                res.setHeader('Content-Type','application/json');
+                res.status(200).json(promo);
+            }).catch((err)=> next(err));
+        });
 
     module.exports = promoRouter;
