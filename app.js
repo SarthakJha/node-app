@@ -1,14 +1,33 @@
+  // sudo npm install -g express-generator 
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
 var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
+
+const mongoose = require('mongoose');
+const Dishes = require('./models/dishes');
+
+const url = 'mongodb://localhost:27017/conFusion';  // this url is for mongoDb server
+
+// express server runs at http://localhost:3000
+
+const connect = mongoose.connect(url); 
+// connnect gives a promise so handle in next line
+
+connect.then((db) => {
+  console.log('connection successful!');
+}, (err)=> {
+  console.log(err);
+});
 
 var app = express();
 
