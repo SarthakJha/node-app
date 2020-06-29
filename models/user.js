@@ -1,5 +1,5 @@
 // ** when using passport, password field is not required by the schema
-
+// to see existing collection on mongoshell use (db.usermodels.find().pretty())
 const mongoose = require('mongoose');
 const { modelName } = require('./dishes');
 var Schema = mongoose.Schema;
