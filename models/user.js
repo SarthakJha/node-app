@@ -1,6 +1,9 @@
+// ** when using passport, password field is not required by the schema
+
 const mongoose = require('mongoose');
 const { modelName } = require('./dishes');
 var Schema = mongoose.Schema;
+var passportLocalMongoose = require('passport-local-mongoose')
 
 var User = new Schema({
     username: {
@@ -8,14 +11,12 @@ var User = new Schema({
         required: true,
         unique: true
     },
-    password: {
-        type:String,
-        required:true,
-    },
     admin: {
         type:Boolean,
         default:false
     }
 
 });
+
+User.plugin(passportLocalMongoose);
 module.exports = mongoose.model('userModel',User);
