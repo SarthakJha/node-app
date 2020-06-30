@@ -30,10 +30,10 @@ router.get('/',(req,res,next)=> {
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');
-var fileStore = require('session-file-store')(session);
+//var session = require('express-session');
+//var fileStore = require('session-file-store')(session);
 var passport = require('passport');
 
 var indexRouter = require('./routes/index');
@@ -41,7 +41,7 @@ var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
 var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
-var authenticate = require('./authenticate')
+//var authenticate = require('./authenticate')
 var config = require('./config');
 
 const mongoose = require('mongoose');
