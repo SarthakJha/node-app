@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser'); // used for parsing JSON
 const mongoose = require('mongoose');
-
+const authenticate = require('../authenticate')
 const dishModel = require('./../models/dishes');
 
 const dishRouter = express.Router();
@@ -19,7 +19,7 @@ dishRouter.route('/')
         res.json(dish); // sends json as response
     }).catch((err)=> next(err)); //error is sent forward to handle later
 })
-.post((req,res,next) => {
+.post(authenticate.veriftUser ,(req,res,next) => {
     dishModel.create(req.body)
     .then((dish)=> {
         console.log('dish created ', dish);
@@ -28,11 +28,11 @@ dishRouter.route('/')
         res.json(dish);
     }).catch((err)=> next(err));
 })
-.put((req,res,next) => {
+.put(authenticate.veriftUser ,(req,res,next) => {
     res.statusCode = 403; // bcos you cant update the whole dish directory
     res.end('PUT requests are not valid on /dishes '); 
 })
-.delete((req,res,next) => {
+.delete(authenticate.veriftUser ,(req,res,next) => {
     dishModel.remove({})
     .then((response)=> {
         res.statusCode = 200;
@@ -53,11 +53,11 @@ dishRouter.route('/:dishId')
         res.json(dish); // sends json as response
     }).catch((err)=> next(err)); 
 })
-.post((req,res,next) => {
+.post(authenticate.veriftUser ,(req,res,next) => {
     res.statusCode = 403; // bcos you cant publish a dish on a specific dish.
     res.end('POST requests are not valid on /dishes ');
 })
-.put((req,res,next) => {
+.put(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findByIdAndUpdate(req.params.dishId,{
          $set: req.body
         }, { new: true })
@@ -66,7 +66,7 @@ dishRouter.route('/:dishId')
         res.status(200).json(dish);
     }).catch((err)=> next(err));   
 })
-.delete((req,res,next) => {
+.delete(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findByIdAndRemove(req.params.dishId)
     .then((dish) => {
         res.setHeader('Content-Type','application/json');
@@ -93,7 +93,7 @@ dishRouter.route('/:dishId/comments')
          // sends json as response
     }).catch((err)=> next(err)); //error is sent forward to handle later
 })
-.post((req,res,next) => {
+.post(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findById(req.params.dishId)
     .then((dish)=> {
         if(dish!=null){
@@ -111,13 +111,13 @@ dishRouter.route('/:dishId/comments')
         }
     }).catch((err)=> next(err));
 })
-.put((req,res,next) => {
+.put(authenticate.veriftUser ,(req,res,next) => {
     res.statusCode = 403; // bcos you cant update the whole dish directory
     res.end('PUT requests are not valid on /dishes/'
     +req.params.dishId+'/comments'
     ); 
 })
-.delete((req,res,next) => {
+.delete(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findById(req.params.dishId)
     .then((dish)=> {
         if(dish!=null){
@@ -163,11 +163,11 @@ dishRouter.route('/:dishId/comments/:commentId')
         res.json(dish); // sends json as response
     }).catch((err)=> next(err)); 
 })
-.post((req,res,next) => {
+.post(authenticate.veriftUser ,(req,res,next) => {
     res.statusCode = 403; // bcos you cant publish a dish on a specific dish.
     res.end('POST requests are not valid on /dishes/comments'+req.params.dishId+'/'+req.params.commentId);
 })
-.put((req,res,next) => {
+.put(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findById(req.params.dishId)
     .then((dish)=> {
         if(dish!=null && dish.comments.id(req.params.commentId)!=null){
@@ -193,7 +193,7 @@ dishRouter.route('/:dishId/comments/:commentId')
         }
     }).catch((err)=> next(err)); 
 })
-.delete((req,res,next) => {
+.delete(authenticate.veriftUser ,(req,res,next) => {
     dishModel.findById(req.params.dishId)
     .then((dish)=> {
         if(dish!=null && dish.comments.id(req.params.commentId)!=null){

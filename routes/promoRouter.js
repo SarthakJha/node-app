@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const authenticate = require('./../authenticate');
+
 const promoRouter = express.Router();
 
 promoRouter.use(bodyParser.json());
@@ -15,18 +17,18 @@ promoRouter.route('/')
             res.status(200).json(proms);
         }).catch((err)=> next(err));
     })
-    .put((req,res,next) => {
+    .put(authenticate.veriftUser,(req,res,next) => {
         res.statusCode = 403;
         res.end('PUT request not available!');
     })
-    .post((req,res,next) => {
+    .post(authenticate.veriftUser,(req,res,next) => {
         promoModel.create(req.body)
         .then((proms)=>{
             res.setHeader('Content-Type','application/json');
             res.status(200).json(proms);
         }).catch((err)=> next(err));
     })
-    .delete((req,res,next) => {
+    .delete(authenticate.veriftUser,(req,res,next) => {
         promoModel.deleteMany({})
         .then((result)=> {
             res.setHeader('Content-Type','application/json');
@@ -42,7 +44,7 @@ promoRouter.route('/:promoId')
             res.status(200).json(promo);
         }).catch((err)=> next(err));
     })
-    .put((req,res,next) => {
+    .put(authenticate.veriftUser,(req,res,next) => {
         promoModel.findByIdAndUpdate(req.params.promoId,{
             $set: req.body
         },{
@@ -52,11 +54,11 @@ promoRouter.route('/:promoId')
             res.status(200).json(promo);
         }).catch((err)=> next(err)); 
     })
-    .post((req,res,next) => {
+    .post(authenticate.veriftUser,(req,res,next) => {
         res.statusCode = 403;
         res.end('POST request not available!');
     })
-    .delete((req,res,next) => {
+    .delete(authenticate.veriftUser,(req,res,next) => {
         promoModel.findByIdAndDelete(req.params.promoId)
             .then((promo)=> {
                 res.setHeader('Content-Type','application/json');

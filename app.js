@@ -42,11 +42,12 @@ var dishRouter = require('./routes/dishRouter');
 var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var authenticate = require('./authenticate')
+var config = require('./config');
 
 const mongoose = require('mongoose');
 //const Dishes = require('./models/dishes');  // this is actually not required(tested)
 
-const url = 'mongodb://localhost:27017/conFusion';  // this url is for mongoDb server
+const url = config.mongoUrl;  // this url is for mongoDb server
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -73,32 +74,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));  // meaning?
 //app.use(cookieParser('12345-67890-09876-54321'));
-app.use(session({
-  name: 'session-id',
-  secret: '12345-67890-09876-54321',
-  saveUninitialized: false,
-  resave: false,
-  store: new fileStore()
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
+app.use(passport.initialize());
 app.use('/', indexRouter); 
 app.use('/users', usersRouter);
 
-// setting up authentication
-function auth (req, res, next) {
-  console.log(req.user)
-  if (!req.user) {
-        var err = new Error('You are not authenticated!');
-        err.status = 401;
-        return next(err);
-  } else {
-          next();
-  }
-}
-
-app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

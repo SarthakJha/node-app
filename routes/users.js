@@ -5,6 +5,8 @@ var passport = require('passport');
 
 var User = require('./../models/user');
 const session = require('express-session');
+const authenticate = require('./../authenticate');
+
 router.use(bodyParser.json());
 
 /* GET users listing. */
@@ -37,14 +39,14 @@ User.register(new User({username: req.body.username}),req.body.password,(err,use
 // if this middleware fails, error response will be automatically sent back
 // therefore, we dont need to pass next(err)
 router.post('/login',passport.authenticate('local'),(req,res)=> {
+  var token = authenticate.getToken({_id: req.user._id});
   res.setHeader('Content-Type','application/json');
-
   res.status(200).json({
     success: true,
+    token: token,
     status: "log-in successful!"
   });
 });
-
 router.get('/logout',(req,res,next)=> {
   if(req.session){
     req.session.destroy(); //destroys the session
